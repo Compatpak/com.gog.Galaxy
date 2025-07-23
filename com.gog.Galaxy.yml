@@ -1,0 +1,125 @@
+app-id: com.gog.Galaxy
+# branch: testing                        # Set branch for testing purposes (Default branch is master)
+sdk: org.winestaging.Sdk
+runtime: org.winestaging.Platform
+runtime-version: '10.10'
+# rename-desktop-file: GOGGalaxy.desktop # Not needed because desktop file is already in reversed domain name format
+# rename-icon: GOGGalaxy                 # Not needed because icons are already in reversed domain name format
+command: GOGGalaxy.sh
+finish-args:
+  - --allow=multiarch                                      # Access to 32bit libraries (For running 32bit executables)
+  # - --allow=devel                                          # Uses full SDK as the runtime (Access to more debugging tools and other libs)
+  # - --allow=bluetooth                                      # Access to bluetooth
+  # - --device=all                                           # Access to all devices
+  - --device=dri                                           # Access to DRI for OpenGL rendering
+  - --device=input                                         # Access to input devices (Controllers, etc)
+  # - --socket=wayland                                       # Access to Wayland socket for display
+  - --socket=fallback-x11                                  # Access to X11 socket for display (Incase wayland doesn't work)
+  - --socket=pulseaudio                                    # Access to pulse audio socket for sound
+  - --share=network                                        # Access to networking
+  - --share=ipc                                            # Access to host IPC namespace
+  - --talk-name=org.freedesktop.ScreenSaver                # Can talk to Screensaver (Allows preventing Screensaver)
+  # - --system-talk-name=org.freedesktop.UDisks2             # Can manage storage devices directly
+  # - --system-talk-name=org.freedesktop.NetworkManager      # Can manage network directly
+  # - --filesystem=host:ro                                   # Read access to common host directories
+  - --filesystem=xdg-run/app/com.discordapp.Discord:create # Read/write access to Discord's running instance (Required for setting up Discord rich presence)
+  # - --filesystem=xdg-run/discord-ipc-0:create              # Read/Write access to Discord's IPC socket (Required for setting up Discord rich presence)
+  - --filesystem=xdg-run/gamescope-0:ro                    # Read access to Gamescope's running instance (Required for Gamescope on Steam Deck)
+  # - --env=WINEARCH=win32                                   # Set Wine to 32bit mode (64bit mode is default)
+  - --env=WINEPREFIX=/var/data/wine                        # Set prefix location
+inherit-extensions:
+  - org.freedesktop.Platform.Compat.i386       # 32bit Linux compatibility
+  - org.freedesktop.Platform.Compat.i386.Debug # 32bit Linux compatibility debug
+  - org.freedesktop.Platform.GL                # OpenGL
+  - org.freedesktop.Platform.GL32              # 32bit OpenGL
+  - org.freedesktop.Platform.GL32.Debug        # 32bit OpenGL Debug
+  - org.freedesktop.Platform.VAAPI.Intel       # Intel VAAPI
+  - org.freedesktop.Platform.VAAPI.Intel.i386  # 32bit Intel VAAPI
+  - org.freedesktop.Platform.ffmpeg-full       # FFmpeg
+  - org.freedesktop.Platform.ffmpeg_full.i386  # 32bit FFmpeg
+modules:
+  # Setting up required stuff
+  - name: Setup
+    buildsystem: simple
+    build-commands:
+      - |
+        # Make directories needed by extensions
+        mkdir -p ${FLATPAK_DEST}/lib/i386-linux-gnu                        # 32bit Linux compatibility
+        mkdir -p ${FLATPAK_DEST}/lib/debug/lib/i386-linux-gnu              # 32bit Linux compatibility debug
+        mkdir -p ${FLATPAK_DEST}/lib/x86_64-linux-gnu/GL                   # OpenGL
+        mkdir -p ${FLATPAK_DEST}/lib/i386-linux-gnu/GL                     # 32bit OpenGL
+        mkdir -p ${FLATPAK_DEST}/lib/debug/lib/i386-linux-gnu/GL           # 32bit OpenGL Debug
+        mkdir -p ${FLATPAK_DEST}/lib/i386-linux-gnu/dri/intel-vaapi-driver # 32bit Intel VAAPI
+        mkdir -p ${FLATPAK_DEST}/lib/ffmpeg                                # FFmpeg
+        mkdir -p ${FLATPAK_DEST}/lib32/ffmpeg                              # 32bit FFmpeg
+        mkdir -p ${FLATPAK_DEST}/extensions
+
+        mkdir -p ${FLATPAK_DEST}/bin                                                                                       # Make directory needed for binaries
+        mkdir -p ${FLATPAK_DEST}/share/applications/                                                                       # Make directory for desktop files
+        mkdir -p ${FLATPAK_DEST}/share/icons/hicolor/{16x16,24x24,32x32,48x48,64x64,128x128,256x256,512x512,scalable}/apps # Make directories needed for icons
+
+  - name: GOGGalaxy
+    sources:
+      # GOG Galaxy installer to be ran with Wine (Downloaded to /app/extra when user is installing because of extra-data)
+      - type: extra-data
+        url: https://webinstallers.gog-statics.com/download/GOG_Galaxy_2.0.exe
+        sha256: fd627d2c37bb5fa3540384fb2923dbfefa1b222d8c34e14f9127c8971efb093e # Hash that is used to confirm the correct file was downloaded
+        size: 983624                                                             # Size of executable (Found with "wc --bytes < filename")
+        x-checker-data: # Checks for a newer version when org.flathub.flatpak-external-data-checker is ran on this file
+          type: rotating-url
+          url: https://webinstallers.gog-statics.com/download/GOG_Galaxy_2.0.exe # Download the current file this url points to and compare hash/size to hash/size above
+        filename: GOGGalaxyInstaller.exe
+
+      # Script that is automatically ran when user is installing, after extra-data is downloaded
+      - type: script
+        dest-filename: apply_extra
+        commands:
+          - |
+            wrestool -x --output=GOGGalaxy.ico -t14 GOGGalaxyInstaller.exe # Extract ico from exe (Uses Icoutils module from org.winestaging.Sdk)
+            magick GOGGalaxy.ico GOGGalaxy.png                             # Convert ico to png (Uses ImageMagick module from org.winestaging.Sdk)
+            # magick GOGGalaxy.ico GOGGalaxy.svg                             # Convert ico to svg
+
+            # Install icons to appropriate directories
+            install -Dm644 GOGGalaxy-3.png ./export/share/icons/hicolor/16x16/apps/com.gog.Galaxy.png
+            install -Dm644 GOGGalaxy-6.png ./export/share/icons/hicolor/24x24/apps/com.gog.Galaxy.png
+            install -Dm644 GOGGalaxy-9.png ./export/share/icons/hicolor/32x32/apps/com.gog.Galaxy.png
+            install -Dm644 GOGGalaxy-11.png ./export/share/icons/hicolor/48x48/apps/com.gog.Galaxy.png
+            install -Dm644 GOGGalaxy-13.png ./export/share/icons/hicolor/64x64/apps/com.gog.Galaxy.png
+            install -Dm644 GOGGalaxy-1.png ./export/share/icons/hicolor/128x128/apps/com.gog.Galaxy.png
+            install -Dm644 GOGGalaxy-7.png ./export/share/icons/hicolor/256x256/apps/com.gog.Galaxy.png
+            # install -Dm644 GOGGalaxy.svg ./export/share/icons/hicolor/scalable/apps/com.gog.Galaxy.svg
+
+      # # Windows registry file
+      # - type: file
+      #   path: Registry/WineGraphics.reg
+
+      # Script that is ran everytime the final Flatpak starts
+      - type: file
+        path: Scripts/GOGGalaxy.sh
+
+      # Placeholder icons (For storefront metadata) (Will be replaced with extracted/converted icon from executable when user installs)
+      - type: dir
+        path: Icons
+
+      - type: file
+        path: DesktopEntries/com.gog.Galaxy.desktop
+
+      - type: file
+        path: com.gog.Galaxy.metainfo.xml
+    buildsystem: simple
+    build-commands:
+      - |
+        ln -s ${FLATPAK_DEST}/extra/GOGGalaxyInstaller.exe ${FLATPAK_DEST}/bin/GOGGalaxyInstaller.exe                               # Symlink to executable that will be downloaded to /app/extra when user installs
+        install -Dm744 apply_extra -t ${FLATPAK_DEST}/bin/                                                                          # Install script that will be ran automatically when user installs after extra-data sources are downloaded
+        # install -Dm644 WineGraphics.reg -t ${FLATPAK_DEST}/share/                                                                   # Install Windows registry keys that will be applied to Wine prefix
+        install -Dm744 GOGGalaxy.sh -t ${FLATPAK_DEST}/bin/                                                                         # Install script that will act as the launch command when the Flatpak it is ran
+        install -Dm644 CompatpakSmoothGOGGalaxyBlack16x16.png ${FLATPAK_DEST}/share/icons/hicolor/16x16/apps/com.gog.Galaxy.png     # Install placeholder icon (Will be replaced with extracted/converted icon from executable when user installs)
+        install -Dm644 CompatpakSmoothGOGGalaxyBlack24x24.png ${FLATPAK_DEST}/share/icons/hicolor/24x24/apps/com.gog.Galaxy.png     # Install placeholder icon (Will be replaced with extracted/converted icon from executable when user installs)
+        install -Dm644 CompatpakSmoothGOGGalaxyBlack32x32.png ${FLATPAK_DEST}/share/icons/hicolor/32x32/apps/com.gog.Galaxy.png     # Install placeholder icon (Will be replaced with extracted/converted icon from executable when user installs)
+        install -Dm644 CompatpakSmoothGOGGalaxyBlack48x48.png ${FLATPAK_DEST}/share/icons/hicolor/48x48/apps/com.gog.Galaxy.png     # Install placeholder icon (Will be replaced with extracted/converted icon from executable when user installs)
+        install -Dm644 CompatpakSmoothGOGGalaxyBlack64x64.png ${FLATPAK_DEST}/share/icons/hicolor/64x64/apps/com.gog.Galaxy.png     # Install placeholder icon (Will be replaced with extracted/converted icon from executable when user installs)
+        install -Dm644 CompatpakSmoothGOGGalaxyBlack128x128.png ${FLATPAK_DEST}/share/icons/hicolor/128x128/apps/com.gog.Galaxy.png # Install placeholder icon (Will be replaced with extracted/converted icon from executable when user installs)
+        install -Dm644 CompatpakSmoothGOGGalaxyBlack256x256.png ${FLATPAK_DEST}/share/icons/hicolor/256x256/apps/com.gog.Galaxy.png # Install placeholder icon (Will be replaced with extracted/converted icon from executable when user installs)
+        install -Dm644 CompatpakSmoothGOGGalaxyBlack512x512.png ${FLATPAK_DEST}/share/icons/hicolor/512x512/apps/com.gog.Galaxy.png # Install placeholder icon (Will be replaced with extracted/converted icon from executable when user installs)
+        install -Dm644 com.gog.Galaxy.desktop -t ${FLATPAK_DEST}/share/applications/                                                # Install desktop file that will be exported for desktop environments to use in their App menus
+        install -Dm644 com.gog.Galaxy.metainfo.xml -t ${FLATPAK_DEST}/share/metainfo/                                               # Install metainfo file

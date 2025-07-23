@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=GOG Galaxy
+GenericName=GOG Galaxy
+Comment=Game Launcher
+Exec=GOGGalaxy.sh
+Categories=Game;Network;
+Icon=com.gog.Galaxy
+Keywords=CD Projekt;GOG;Good Old Games;Galaxy;GOG Galaxy;

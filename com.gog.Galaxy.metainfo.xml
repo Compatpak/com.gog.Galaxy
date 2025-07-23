@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2025 Compatpak -->
+<component type="desktop-application">
+  <id>com.gog.Galaxy</id>
+  <metadata_license>CC-BY-SA-3.0</metadata_license>
+  <project_license>GPL-3.0-only</project_license>
+  <name>GOG Galaxy</name>
+  <summary>Game Launcher</summary>
+
+  <developer id="io.github">
+    <name>Compatpak</name>
+  </developer>
+
+  <description>
+    <p>
+      Connect GOG GALAXY 2.0 with multiple platforms and unite all your games and friends scattered across them in one powerful app.
+    </p>
+  </description>
+
+  <launchable type="desktop-id">com.gog.Galaxy.desktop</launchable>
+
+  <provides>
+    <binary>GOGGalaxyInstaller.exe</binary>
+  </provides>
+
+  <categories>
+    <category>Game</category>
+    <category>Network</category>
+  </categories>
+
+  <keywords>
+    <keyword>CD Projekt</keyword>
+    <keyword>GOG</keyword>
+    <keyword>Good Old Games</keyword>
+    <keyword>Galaxy</keyword>
+    <keyword>GOG Galaxy</keyword>
+  </keywords>
+
+  <icon type="stock">com.gog.Galaxy</icon>
+
+  <project_group>Compatpak</project_group>
+
+  <!-- Preview at https://docs.flathub.org/banner-preview/ -->
+  <branding>
+    <color type="primary" scheme_preference="light">#6800D1</color>
+    <color type="primary" scheme_preference="dark">#CD00EE</color>
+  </branding>
+
+  <!-- Uses https://hughsie.github.io/oars/generate.html to generate -->
+  <content_rating type="oars-1.0">
+    <content_attribute id="social-chat">moderate</content_attribute>
+    <content_attribute id="social-info">mild</content_attribute>
+    <content_attribute id="money-purchasing">intense</content_attribute>
+    <content_attribute id="money-advertising">moderate</content_attribute>
+  </content_rating>
+
+
+  <url type="homepage">https://compatpak.github.io/repo/</url>
+  <url type="donation">https://www.patreon.com/c/Compatpak</url>
+  <url type="donation">https://ko-fi.com/compatpak</url>
+  <url type="contact">https://discord.gg/P7DZVjDSUa</url>
+  <!-- <url type="faq">https://example.org/faq</url> -->
+  <!-- <url type="translate">https://example.org/translate</url> -->
+  <url type="bugtracker">https://github.com/Compatpak/com.gog.Galaxy/issues</url>
+  <url type="contribute">https://github.com/Compatpak/com.gog.Galaxy</url>
+  <url type="vcs-browser">https://github.com/Compatpak/com.gog.Galaxy</url>
+
+
+  <screenshots>
+    <screenshot type="default">
+      <caption>GOG Galaxy Discover</caption>
+      <image>https://github.com/Compatpak/com.gog.Galaxy/blob/main/Screenshots/GOGGalaxyDiscover.png?raw=true</image>
+    </screenshot>
+    <screenshot>
+      <caption>GOG Galaxy Store</caption>
+      <image>https://github.com/Compatpak/com.gog.Galaxy/blob/main/Screenshots/GOGGalaxyStore.png?raw=true</image>
+    </screenshot>
+    <screenshot>
+      <caption>GOG Galaxy Library</caption>
+      <image>https://github.com/Compatpak/com.gog.Galaxy/blob/main/Screenshots/GOGGalaxyLibrary.png?raw=true</image>
+    </screenshot>
+    <screenshot>
+      <caption>GOG Galaxy Game</caption>
+      <image>https://github.com/Compatpak/com.gog.Galaxy/blob/main/Screenshots/GOGGalaxyGame.png?raw=true</image>
+    </screenshot>
+    <screenshot>
+      <caption>GOG Galaxy Dreamlist</caption>
+      <image>https://github.com/Compatpak/com.gog.Galaxy/blob/main/Screenshots/GOGGalaxyDreamlist.png?raw=true</image>
+    </screenshot>
+  </screenshots>
+
+  <releases>
+    <release version="1" date="2025-07-23">
+      <!-- <url type="details">https://example.org/changelog.html#version_1.0.1</url> -->
+      <!-- <description>
+        <p>Release description</p>
+          <ul>
+            <li>List of changes</li>
+            <li>List of changes</li>
+          </ul>
+      </description> -->
+    </release>
+  </releases>
+
+  <!-- <translation type="gettext">gnome-builder</translation>
+  <translation type="qt">qtdemo</translation> -->
+
+  <requires>
+    <!-- <control>keyboard</control> -->
+    <!-- <control>pointing</control> -->
+    <!-- <control>gamepad</control> -->
+    <!-- <control>touch</control> -->
+    <display_length compare="ge">360</display_length> <!-- Mobile/tablet AND desktop supported -->
+    <!-- <display_length compare="ge">768</display_length> --> <!-- ONLY desktop supported -->
+    <!-- <display_length compare="le">1279</display_length> --> <!-- ONLY mobile/tablet supported -->
+  </requires>
+
+  <recommends>
+    <control>keyboard</control>
+    <control>pointing</control>
+    <control>gamepad</control>
+    <!-- <control>touch</control> -->
+  </recommends>
+</component>
