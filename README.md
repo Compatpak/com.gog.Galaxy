@@ -6,7 +6,7 @@ flatpak run org.flatpak.Builder build-dir --repo=../Compatpak/repo --force-clean
 ```
 ## Installing
 ```console
-flatpak install --user ../Compatpak/repo com.gog.Galaxy
+flatpak install ../Compatpak/repo com.gog.Galaxy
 ```
 ## Running
 ```console
