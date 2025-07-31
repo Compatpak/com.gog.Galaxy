@@ -63,8 +63,8 @@ modules:
       # GOG Galaxy installer to be ran with Wine (Downloaded to /app/extra when user is installing because of extra-data)
       - type: extra-data
         url: https://webinstallers.gog-statics.com/download/GOG_Galaxy_2.0.exe
-        sha256: fd627d2c37bb5fa3540384fb2923dbfefa1b222d8c34e14f9127c8971efb093e # Hash that is used to confirm the correct file was downloaded
-        size: 983624                                                             # Size of executable (Found with "wc --bytes < filename")
+        sha256: 15fa1d6b9486890f26ee7efb1992e650e8203bd7dd510e4db71dc19b635430da # Hash that is used to confirm the correct file was downloaded
+        size: 984912                                                             # Size of executable (Found with "wc --bytes < filename")
         x-checker-data: # Checks for a newer version when org.flathub.flatpak-external-data-checker is ran on this file
           type: rotating-url
           url: https://webinstallers.gog-statics.com/download/GOG_Galaxy_2.0.exe # Download the current file this url points to and compare hash/size to hash/size above
